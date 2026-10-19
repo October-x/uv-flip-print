@@ -6,6 +6,8 @@ Generate paired color/depth maps and optional eufyMake Studio EMPF projects for 
 
 **复制给 AI 的提示词：[docs/AI_PROMPT.md](docs/AI_PROMPT.md)** · **[Skill 使用说明](SKILL.md)** · **[编码原理](docs/ALGORITHM.md)**
 
+AI 默认只交付彩色图与高度图，再通过对话一步步引导你在 Studio 中设置；不主动发送项目、ZIP 或说明文档。项目和打包功能仍可按需使用。
+
 ![本地工具界面，原创几何示例](docs/images/workbench.png)
 
 这是适配 eufyMake E1 的独立社区工具，非安克／eufyMake 官方产品。原双视图流程有制作者实物成功反馈；本仓库的软件测试不等于对任意图片、尺寸和设备的打印保证。三视图标为实验功能。
@@ -42,10 +44,10 @@ python run.py
 在仓库根目录，用已安装依赖的 Python 执行：
 
 ```sh
-python scripts/generate.py --left left.png --right right.png --width-mm 50 --height-mm 50 --project --out output/first-print
+python scripts/generate.py --left left.png --right right.png --width-mm 50 --height-mm 50 --out output/first-print
 ```
 
-`--left` 指从打印面左侧观看时显示的图片，`--right` 对应右侧；不镜像素材。输出目录须新建或为空，避免覆盖。需要第三幅时加 `--center center.png`；需要纯色去底时加 `--remove-background`；不需要项目时省略 `--project`。
+`--left` 指从打印面左侧观看时显示的图片，`--right` 对应右侧；不镜像素材。输出目录须新建或为空，避免覆盖。需要第三幅时加 `--center center.png`；需要纯色去底时加 `--remove-background`；需要额外生成 Studio 项目时才加 `--project`。脚本仍会在输出目录生成参数和 ZIP，AI 默认只向用户提供两张 PNG。
 
 没有图片也可先跑合成图示例：
 
@@ -63,11 +65,13 @@ npx skills add October-x/uv-flip-print
 
 ## 在 Studio 打印
 
-1. 优先打开生成的 `.empf`。内含配套 PNG、成品毫米尺寸和 0.80 mm 彩色堆高设置，不需要分别配图。
-2. 或导入彩色 PNG → 自定义纹理 / Customize Texture → 导入配套高度 PNG → 彩色堆高 / Color Raised。
-3. 核对**成品宽、高**；浮雕厚度 **0.80 mm**，对比度 0、省墨 0%、不反相。两图保持同尺寸、位置、方向。
+1. 保存彩色 PNG 和高度 PNG，打开 Studio。
+2. 导入彩色 PNG，核对**成品毫米宽、高**。
+3. 自定义纹理 / Customize Texture → 导入配套高度 PNG → 彩色堆高 / Color Raised。浮雕厚度 **0.80 mm**，对比度 0、省墨 0%、不反相；两图保持同尺寸、位置、方向。
 4. 按实际平台快照定位，测量材料高度。**3 mm 亚克力是板材厚度，0.8 mm 是表面浮雕高度，两者不同。**
 5. 从打印面观看，先打小样，再考虑批量。修改尺寸后重新生成，不能只在 Studio 拉伸旧图。
+
+使用 AI 提示词时，它会按你的进度拆开指导上面的操作，等你完成当前步骤再继续。如果主动选择了项目导出，也可打开 `.empf`，它已包含配套 PNG、毫米尺寸和堆高设置，仍需自己定位测高。
 
 EMPF 使用未加密的本地 ZIP 项目格式，底层导出模块已在 **Studio 4.3.6cn** 实测打开并识别彩色堆高；其他版本需自行核对，打不开时用 PNG 配对导入。默认标准 335×420 mm 平板画布，仅为编辑位置，必须按自己的材料重新定位测高。编辑器白色底图不是打印白底对象。
 

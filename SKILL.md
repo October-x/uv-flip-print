@@ -1,6 +1,6 @@
 ---
 name: uv-flip-print
-description: 将两张图片生成单面 UV 浮雕变画的配套彩色 PNG、高度 PNG 和可选 eufyMake Studio 项目；支持尺寸、透明底和实验性三图。用于实际打印文件，不用于普通文生图或柱镜片背印。
+description: 将两张原图生成单面 UV 浮雕变画的彩色 PNG 与高度 PNG，再逐步引导用户在 eufyMake Studio 设置打印；支持尺寸、透明底和实验性三图。用于实际打印文件，不用于普通文生图或柱镜片背印。
 license: MIT
 metadata:
   runtime: Python 3.12; code execution; network for dependency installation
@@ -15,12 +15,13 @@ metadata:
 3. 在本目录执行：
 
    ```text
-   python scripts/generate.py --left LEFT.png --right RIGHT.png --width-mm 50 --height-mm 50 --project --out NEW_OUTPUT_DIR
+   python scripts/generate.py --left LEFT.png --right RIGHT.png --width-mm 50 --height-mm 50 --out NEW_OUTPUT_DIR
    ```
 
-   `--project` 同时生成 .empf，PNG 仍保留。`--center CENTER.png` 启用实验三图；`--remove-background` 仅适用于均匀纯色外背景，默认保留背景。不要在用户未要求时抠图、裁切、重绘或删除主体白色细节。
+   默认只交付彩色 PNG 与高度 PNG；脚本附带的 ZIP 和参数用于内部核对，不主动作为附件提供。只有用户明确要求项目时才加 `--project` 生成 .empf，要求打包时才提供 ZIP。`--center CENTER.png` 启用实验三图；`--remove-background` 仅适用于均匀纯色外背景，默认保留背景。不要在用户未要求时抠图、裁切、重绘或删除主体白色细节。
 4. 检查命令成功、同组 PNG 尺寸一致，查看输出缩略图／原图比例。程序会回读 PNG，核对尺寸、DPI 和配对信息，透明区域为零高度。实物切换效果仍需试印。
-5. 提供可下载的彩色图、高度图、项目和 ZIP；附毫米尺寸与 Studio 自定义纹理／彩色堆高 0.80 mm 设置。板材厚度按实际材料测高，不等于浮雕高度；项目不会自动打印。
+5. 提供两个真实下载链接，标明彩色图、高度图和成品毫米尺寸。不要主动生成说明文档、PDF、Word 或整篇教程。告诉用户先保存两图并打开 Studio，停下来等用户回复。
+6. 根据用户进度，每次指导一小步：导入彩色图并设毫米尺寸 → 自定义纹理中导入高度图 → 彩色堆高 0.80 mm、对比度 0、省墨 0%、不反相 → 实际材料定位、测高和打印前检查。不要在首次回复一次列完流程；后续只给当前步骤，等完成后再继续。界面不同或找不到按钮时再请求当前截图，以实际界面为准。两图须同尺寸、同位置、同方向；板材厚度不等于浮雕高度。在对应步骤提示这些要点，打印由用户操作，不自动提交任务。
 
 详细打印与兼容边界见 [README.md](README.md)；只有需要分析算法时再读 [docs/ALGORITHM.md](docs/ALGORITHM.md)。
 
