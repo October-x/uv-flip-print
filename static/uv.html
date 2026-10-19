@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f6f3">
+  <title>变画工坊 · UV 彩色图与高度图生成</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%231a5a4c'/%3E%3Cpath d='m10 28 5-16 5 16 5-16 5 16' fill='none' stroke='white' stroke-width='2.5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/static/uv.css?v=1">
+  <script type="module" src="/static/uv.js?v=1"></script>
+</head>
+<body>
+  <svg xmlns="http://www.w3.org/2000/svg" class="svg-defs" aria-hidden="true">
+    <symbol id="uv-mark" viewBox="0 0 32 32"><path d="m4 24 6-17 6 17 6-17 6 17"/></symbol>
+    <symbol id="uv-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="uv-photo" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/></symbol>
+    <symbol id="uv-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="uv-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 17v4h16v-4"/></symbol>
+    <symbol id="uv-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+  </svg>
+  <header class="topbar">
+    <a class="brand" href="/uv"><span class="brand-icon"><svg><use href="#uv-mark"/></svg></span><span>变画工坊<small>UV FLIP PRINT</small></span></a>
+    <nav aria-label="工具导航"><a href="https://github.com/October-x/uv-flip-print" target="_blank" rel="noopener">GitHub ↗</a><span class="local-badge"><i></i>仅在本机处理</span></nav>
+  </header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">让图片，随视角切换</p><h1 id="page-title">上传图片，生成 UV 变画。</h1><p class="intro-copy">选好画面和尺寸，下载配套的彩色图与高度图。</p></div>
+      <div class="material-tag"><span>适用于 eufyMake E1</span><strong>单面 UV 浮雕<span> / </span>左右切换</strong></div>
+    </section>
+
+    <form id="generator-form" novalidate>
+      <div class="workspace">
+        <section class="panel images-panel" aria-labelledby="images-title">
+          <div class="section-heading"><span class="step">01</span><h2 id="images-title">放入你的图片</h2><span id="mode-badge" class="mode-badge">双画面</span></div>
+          <p class="section-description">按观看顺序放置，拖动图片或点击箭头可交换顺序。</p>
+          <input id="file-input" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+          <div id="image-slots" class="image-slots" aria-label="画面顺序"></div>
+          <div class="image-actions"><button type="button" id="add-third" class="text-button">＋ 添加第三幅<span class="experiment-tag">实验</span></button><button type="button" id="clear-all" class="muted-button" hidden>清空图片</button></div>
+          <div id="three-view-note" class="experiment-note" hidden>三画面为实验功能：正面可能混入左右画面，效果需要实物打样确认。</div>
+          <p class="image-help">PNG / JPG / WebP · 每张不超过 20 MB<br>保留原图构图和比例；透明 PNG 直接保留透明度。</p>
+        </section>
+
+        <section class="panel size-panel" aria-labelledby="size-title">
+          <div class="section-heading"><span class="step">02</span><h2 id="size-title">设置成品尺寸</h2></div>
+          <p class="section-description">输入打印到材料上的实际宽、高。</p>
+          <div class="dimensions"><label for="width-mm">宽度<div class="number-field"><input type="number" id="width-mm" name="width_mm" min="5" max="300" step="0.1" value="50" required inputmode="decimal" aria-describedby="size-note"><span>mm</span></div></label><span class="times" aria-hidden="true">×</span><label for="height-mm">高度<div class="number-field"><input type="number" id="height-mm" name="height_mm" min="5" max="300" step="0.1" value="50" required inputmode="decimal" aria-describedby="size-note"><span>mm</span></div></label></div>
+          <p id="size-note" class="field-hint">图片等比适配，空余部分透明留白。</p>
+          <div class="fixed-setting"><span>浮雕高度</span><strong>0.8 <small>mm</small></strong><span class="fixed-tag">固定</span></div>
+          <div class="export-settings"><label><input type="checkbox" id="remove-background"> 去除纯色背景</label><p class="field-hint">保留内部封闭白色。复杂背景请先抠图，处理后请检查边缘。</p><fieldset><legend>生成格式</legend><label><input type="radio" name="output-mode" value="images" checked> 彩色图＋高度图</label><label><input type="radio" name="output-mode" value="project"> Studio 项目文件 .empf</label></fieldset></div><div class="output-list"><span>生成内容</span><p><svg><use href="#uv-check"/></svg>彩色图 <small>PNG</small></p><p><svg><use href="#uv-check"/></svg>高度图 <small>PNG</small></p></div>
+          <button id="generate-button" class="primary-button" type="submit" disabled><span>生成打印文件</span><svg><use href="#uv-arrow"/></svg></button>
+          <p id="generate-hint" class="generate-hint">放入两张图片即可开始</p>
+        </section>
+      </div>
+    </form>
+
+    <div id="error-message" role="alert" class="error-message" hidden></div>
+    <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+
+    <section id="results" class="panel results-panel" aria-labelledby="result-title" hidden>
+      <div class="result-heading"><div><p class="eyebrow">准备好打印了</p><h2 id="result-title">两张文件，配套使用。</h2><p id="result-summary"></p></div><a id="download-package" class="package-link" download>一起下载 ZIP <span>↗</span></a></div>
+      <a id="download-project" class="download-button" download hidden>下载 Studio 项目 .empf</a><div class="output-cards">
+        <article class="output-card"><div class="output-card-header"><h3>彩色图</h3><span>COLOR MAP</span></div><div class="output-preview checker"><img id="color-preview" alt="生成的条纹交织彩色图预览"></div><a id="download-color" class="download-button" download><svg><use href="#uv-download"/></svg>下载彩色图</a></article>
+        <article class="output-card"><div class="output-card-header"><h3>高度图</h3><span>DEPTH MAP</span></div><div class="output-preview dark-preview"><img id="depth-preview" alt="生成的灰度浮雕高度图预览"></div><a id="download-depth" class="download-button" download><svg><use href="#uv-download"/></svg>下载高度图</a></article>
+      </div>
+      <div class="studio-note"><span class="note-label">Studio 设置</span><p id="studio-settings"></p></div>
+      <p class="result-footnote">两张文件须保持同尺寸、同位置、同方向。预览经过缩小，不代表实物的角度切换效果。ZIP 内附打印说明。</p>
+    </section>
+    <footer><span>改尺寸后，请重新生成配套文件。</span><span>文件在本机临时保留，闲置 1 小时后过期，请及时下载。</span></footer>
+  </main>
+</body>
+</html>
